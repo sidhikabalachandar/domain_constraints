@@ -68,12 +68,11 @@ def generate_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=None, be
     T = (np.random.random(p_T.shape) < p_T).astype(int)
 
     # scatterplot of p_T vs p_Y with title of mean T and mean Y
-    if Y[T==1].mean() - Y.mean() > cutoff:
-        plt.scatter(p_T, p_Y, alpha=0.1)
-        plt.title('Mean T: ' + str(np.mean(T)) + ', Mean Y: ' + str(np.mean(Y)) + '\np(Y=1|T=1): ' + str(np.mean(Y[T == 1])) + ', p(Y=1|T=0): ' + str(np.mean(Y[T == 0])))
-        plt.xlabel('p_T')
-        plt.ylabel('p_Y')
-        plt.show()
+    plt.scatter(p_T, p_Y, alpha=0.1)
+    plt.title('Mean T: ' + str(np.mean(T)) + ', Mean Y: ' + str(np.mean(Y)) + '\np(Y=1|T=1): ' + str(np.mean(Y[T == 1])) + ', p(Y=1|T=0): ' + str(np.mean(Y[T == 0])))
+    plt.xlabel('p_T')
+    plt.ylabel('p_Y')
+    plt.show()
     
     return {'observed_data':{'X':X, 'Y':Y.flatten(), 'T':T.flatten(), 'N':N, 'M':M,
             'num_T1_Y1':np.sum((T == 1) & (Y == 1)), 'num_T1_Y0':np.sum((T == 1) & (Y == 0)), 
