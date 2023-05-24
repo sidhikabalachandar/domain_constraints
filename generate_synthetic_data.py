@@ -102,7 +102,7 @@ def main():
                                                          betaDelta_0_except_for_these_idxs=betaDelta_0_except_for_these_idxs, 
                                                          Z_type=args.Z_type)
 
-        file = open('{}/{}_unobservables_N_{}_y0_{}_d0_{}_istd_{}_sstd_{}_brstd_{}_v{}.pkl'.format(args.save_path, args.Z_type, cutoff, N, Y_intercept_mean, delta_intercept_mean, intercept_std, sigma_std, beta_risk_std, i), 'wb')
+        file = open('{}/{}_unobservables_N_{}_y0_{}_d0_{}_istd_{}_sstd_{}_brstd_{}_v{}.pkl'.format(args.save_path, args.Z_type, args.N, args.betaY_intercept_mean, args.betaDelta_intercept_mean, args.intercept_std, args.sigma_std, args.alpha_std, i), 'wb')
         pickle.dump(simulated_data, file)
         file.close()
     
