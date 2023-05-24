@@ -21,7 +21,7 @@ def get_args():
     parser.add_argument('--N', type=int, default=-1) # don't incclude if you want full dataset
     parser.add_argument('--file_path', type=str) # path to data
     parser.add_argument('--save_path', type=str) # path to folder where stan samples should be saved
-    parser.add_argument('--model', type=str) 
+    parser.add_argument('--model', type=str) # path to stan model file
     args = parser.parse_args()
     return args
 
@@ -29,7 +29,7 @@ def main():
     args = get_args()
 
     # get model
-    stan_file = './cleaned_up_simulation_code/{}.stan'.format(args.model)
+    stan_file = args.model
     with open(stan_file) as file:
         stan_code = file.read()
 
