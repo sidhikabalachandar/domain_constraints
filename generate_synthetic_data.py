@@ -81,7 +81,7 @@ def generate_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=None, be
             'T1_Y0_idxs':np.where((T == 1) & (Y == 0))[0] + 1,
             'T0_idxs':np.where(T == 0)[0] + 1},
             'latent_data':{'Z':Z, 'p_Y':p_Y, 'p_T':p_T}, 
-            'parameters':{'betaY':betaY, 'betaDelta':betaDelta, 'alpha':alpha, 'sigma':sigma, 'implied_prevalence':np.mean(Y)}}
+            'parameters':{'beta_Y':betaY, 'beta_delta':betaDelta, 'alpha':alpha, 'sigma':sigma, 'implied_prevalence':np.mean(Y)}}
 
 def main():
     args = get_args()

@@ -54,7 +54,7 @@ def main():
     true_prevalence = simulated_data['observed_data']['Y'].mean()
     sigma_Z = simulated_data['parameters']['sigma']
     alpha_risk = simulated_data['parameters']['alpha']
-    beta_XY = simulated_data['parameters']['beta_Y']
+    beta_Y = simulated_data['parameters']['beta_Y']
     beta_delta = simulated_data['parameters']['beta_delta']
     print("true prevalence", true_prevalence)
     print("p(T): %2.3f" % T.mean())
@@ -95,7 +95,7 @@ def main():
     print("true prevalence:", true_prevalence)
     print("N_zeroed_out_beta_delta_indices:", N_zeroed_out_beta_delta_indices)
     print("zeroed_out_beta_delta_indices:", zeroed_out_beta_delta_indices)
-    print('beta_XY:', beta_XY)
+    print('beta_Y:', beta_Y)
     print('beta_delta:', beta_delta)
     print('N:', N)
     
