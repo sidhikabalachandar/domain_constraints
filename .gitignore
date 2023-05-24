@@ -1,0 +1,10 @@
+*.jpg
+/out
+/*build*
+/data
+*.pkl
+/*.ipynb_checkpoints*
+/stan_code/*.ipynb_checkpoints*
+/*results*
+.RData
+.Rhistory
