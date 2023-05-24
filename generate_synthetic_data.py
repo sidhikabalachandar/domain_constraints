@@ -5,7 +5,8 @@ import pandas as pd
 import argparse
 import matplotlib.pyplot as plt
 import pickle
-import os	
+import os
+from scipy.special import expit
 
 def get_args():
     parser = argparse.ArgumentParser()
