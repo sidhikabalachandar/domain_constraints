@@ -14,7 +14,7 @@ def get_args():
     parser.add_argument('--num_chains', type=int)
     parser.add_argument('--job_id', type=int) # unique identifier for job
     parser.add_argument('--sigma', type=float) # set to -1 if you want sigma to float
-    parser.add_argument('--alpha_risk', type=float) # set to -1 if you want alpha_risk to float
+    parser.add_argument('--alpha', type=float) # set to -1 if you want alpha to float
     parser.add_argument('--prevalence_constraint_weight', type=float) # set to 0 if you don't want prevalence
     parser.add_argument('--use_sparsity_prior', action=argparse.BooleanOptionalAction)
     parser.add_argument('--sparsity_prior_idx', type=int, default=0)
@@ -53,7 +53,7 @@ def main():
     Y = simulated_data['observed_data']['Y'][:N]
     true_prevalence = simulated_data['observed_data']['Y'].mean()
     sigma = simulated_data['parameters']['sigma']
-    alpha_risk = simulated_data['parameters']['alpha']
+    alpha = simulated_data['parameters']['alpha']
     beta_Y = simulated_data['parameters']['beta_Y']
     beta_delta = simulated_data['parameters']['beta_delta']
     print("true prevalence", true_prevalence)
@@ -69,8 +69,8 @@ def main():
         simulated_data['observed_data']['known_sigma'] = sigma
     else:
         simulated_data['observed_data']['known_sigma'] = -1
-    if args.alpha_risk != -1:
-        simulated_data['observed_data']['known_alpha'] = alpha_risk
+    if args.alpha != -1:
+        simulated_data['observed_data']['known_alpha'] = alpha
     else:
         simulated_data['observed_data']['known_alpha'] = -1
     if args.use_sparsity_prior:
@@ -115,7 +115,7 @@ def main():
             'prevalence_constraint_weight':simulated_data['observed_data']['prevalence_constraint_weight'],
             'true_prevalence':simulated_data['observed_data']['true_prevalence'],
             'known_sigma': simulated_data['observed_data']['known_sigma'],
-            'known_alpha_risk': simulated_data['observed_data']['known_alpha_risk']
+            'known_alpha': simulated_data['observed_data']['known_alpha']
            }
     
     print(data)
