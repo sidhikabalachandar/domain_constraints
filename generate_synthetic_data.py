@@ -24,7 +24,7 @@ def get_args():
     args = parser.parse_args()
     return args
 
-def generate_normal_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=None, betaDelta_intercept=None, betaDelta_0_except_for_these_idxs=None): 
+def generate_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=None, betaDelta_intercept=None, betaDelta_0_except_for_these_idxs=None): 
     """
     N: number of observations
     M: number of features
@@ -44,7 +44,7 @@ def generate_normal_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=N
     if Z_type == 'normal':
         Z = np.random.normal(loc=0, scale=sigma, size=(N, 1))
     elif Z_type == 'uniform':
-        Z = np.random.uniform(low=0, high=sigma_Z, size=(N, 1))
+        Z = np.random.uniform(low=0, high=sigma, size=(N, 1))
     betaY = np.random.normal(size=(M, 1))
     
     # create betaDelta
@@ -93,7 +93,7 @@ def main():
         sigma = np.random.normal(loc=args.sigma_mean, scale=args.sigma_std)
         betaY_intercept = np.random.normal(loc=args.betaY_intercept_mean, scale=args.intercept_std)
         betaDelta_intercept = np.random.normal(loc=args.betaDelta_intercept_mean, scale=args.intercept_std)
-        simulated_data = generate_uniform_simulated_data(N=args.N, 
+        simulated_data = generate_simulated_data(N=args.N, 
                                                          M=args.M, 
                                                          sigma=sigma, 
                                                          alpha=alpha,
