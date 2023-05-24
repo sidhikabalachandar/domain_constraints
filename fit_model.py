@@ -13,7 +13,7 @@ def get_args():
     parser.add_argument('--num_sampling_iter', type=int)
     parser.add_argument('--num_chains', type=int)
     parser.add_argument('--job_id', type=int) # unique identifier for job
-    parser.add_argument('--sigma_z', type=float) # set to -1 if you want sigma_z to float
+    parser.add_argument('--sigma', type=float) # set to -1 if you want sigma to float
     parser.add_argument('--alpha_risk', type=float) # set to -1 if you want alpha_risk to float
     parser.add_argument('--prevalence_constraint_weight', type=float) # set to 0 if you don't want prevalence
     parser.add_argument('--use_sparsity_prior', action=argparse.BooleanOptionalAction)
@@ -52,7 +52,7 @@ def main():
     T = simulated_data['observed_data']['T'][:N]
     Y = simulated_data['observed_data']['Y'][:N]
     true_prevalence = simulated_data['observed_data']['Y'].mean()
-    sigma_Z = simulated_data['parameters']['sigma']
+    sigma = simulated_data['parameters']['sigma']
     alpha_risk = simulated_data['parameters']['alpha']
     beta_Y = simulated_data['parameters']['beta_Y']
     beta_delta = simulated_data['parameters']['beta_delta']
@@ -65,8 +65,8 @@ def main():
     # constraints
     simulated_data['observed_data']['prevalence_constraint_weight'] = args.prevalence_constraint_weight
     simulated_data['observed_data']['true_prevalence'] = true_prevalence
-    if args.sigma_z != -1:
-        simulated_data['observed_data']['known_sigma'] = sigma_Z
+    if args.sigma != -1:
+        simulated_data['observed_data']['known_sigma'] = sigma
     else:
         simulated_data['observed_data']['known_sigma'] = -1
     if args.alpha_risk != -1:
@@ -114,7 +114,7 @@ def main():
             "T0_idxs":np.where(T == 0)[0] + 1, 
             'prevalence_constraint_weight':simulated_data['observed_data']['prevalence_constraint_weight'],
             'true_prevalence':simulated_data['observed_data']['true_prevalence'],
-            'known_sigma_Z': simulated_data['observed_data']['known_sigma_Z'],
+            'known_sigma': simulated_data['observed_data']['known_sigma'],
             'known_alpha_risk': simulated_data['observed_data']['known_alpha_risk']
            }
     
