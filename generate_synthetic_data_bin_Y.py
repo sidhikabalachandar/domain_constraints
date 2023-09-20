@@ -10,18 +10,18 @@ from scipy.special import expit
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num_datasets_to_save', type=int)
-    parser.add_argument('--N', type=int)
-    parser.add_argument('--M', type=int)
-    parser.add_argument('--alpha_mean', type=float) 
-    parser.add_argument('--sigma_mean', type=float) 
-    parser.add_argument('--betaY_intercept_mean', type=float) 
-    parser.add_argument('--betaDelta_intercept_mean', type=float) 
-    parser.add_argument('--intercept_std', type=float)
-    parser.add_argument('--sigma_std', type=float)
-    parser.add_argument('--alpha_std', type=float) 
+    parser.add_argument('--num_datasets_to_save', type=int, default=200)
+    parser.add_argument('--N', type=int, default=5000)
+    parser.add_argument('--M', type=int, default=5)
+    parser.add_argument('--alpha_mean', type=float, default=1) 
+    parser.add_argument('--sigma_mean', type=float, default=2) 
+    parser.add_argument('--betaY_intercept_mean', type=float, default=-2) 
+    parser.add_argument('--betaDelta_intercept_mean', type=float, default=2) 
+    parser.add_argument('--intercept_std', type=float, default=0.5)
+    parser.add_argument('--sigma_std', type=float, default=0.5)
+    parser.add_argument('--alpha_std', type=float, default=0.5) 
     parser.add_argument('--save_path', type=str) # path to where data should be saved
-    parser.add_argument('--Z_type', type=str) 
+    parser.add_argument('--Z_type', type=str, choices=['normal', 'uniform']) 
     args = parser.parse_args()
     return args
 
@@ -102,7 +102,7 @@ def main():
                                                          betaDelta_0_except_for_these_idxs=betaDelta_0_except_for_these_idxs, 
                                                          Z_type=args.Z_type)
 
-        file = open('{}/{}_unobservables_N_{}_y0_{}_d0_{}_istd_{}_sstd_{}_brstd_{}_v{}.pkl'.format(args.save_path, args.Z_type, args.N, args.betaY_intercept_mean, args.betaDelta_intercept_mean, args.intercept_std, args.sigma_std, args.alpha_std, i), 'wb')
+        file = open('{}/{}_unobservables_N_{}_y0_{}_d0_{}_s_{}_a_{}_istd_{}_sstd_{}_astd_{}_v{}.pkl'.format(args.save_path, args.Z_type, args.N, args.betaY_intercept_mean, args.betaDelta_intercept_mean, args.sigma_mean, args.alpha_mean, args.intercept_std, args.sigma_std, args.alpha_std, i), 'wb')
         pickle.dump(simulated_data, file)
         file.close()
     
