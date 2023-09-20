@@ -1,5 +1,5 @@
 # domain_constraints
-Code to generate synthetic data experiments and associated results in "Domain constraints improve healthcare risk prediction when outcome data is missing" by Sidhika Balachandar, Nikhil Garg, and Emma Pierson.
+Code to generate synthetic data experiments and associated results in "Domain constraints improve healthcare risk prediction when outcome data is missing".
 
 ## Regenerating results
 1. <strong>Conda environment.</strong> The conda environment we use is specified in <TT>domain_constraints.yml</TT>.
