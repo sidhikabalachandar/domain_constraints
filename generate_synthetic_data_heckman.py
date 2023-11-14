@@ -17,9 +17,9 @@ def get_args():
     parser.add_argument('--sigma_mean', type=float, default=2) 
     parser.add_argument('--betaY_intercept_mean', type=float, default=-2) 
     parser.add_argument('--betaT_intercept_mean', type=float, default=2) 
-    parser.add_argument('--intercept_std', type=float, default=0.5)
-    parser.add_argument('--sigma_std', type=float, default=0.5)
-    parser.add_argument('--rho_std', type=float, default=0.5) 
+    parser.add_argument('--intercept_std', type=float, default=0.1)
+    parser.add_argument('--sigma_std', type=float, default=0.1)
+    parser.add_argument('--rho_std', type=float, default=0.1) 
     parser.add_argument('--beta_std', type=float, default=1)
     parser.add_argument('--save_path', type=str) # path to where data should be saved
     parser.add_argument('--num_not_sparse', type=int, default=2)
