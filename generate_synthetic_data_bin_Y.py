@@ -105,7 +105,7 @@ def main():
                                                          Z_type=args.Z_type,
                                                          beta_std=args.beta_std)
 
-        file = open('{}/{}_unobservables_N_{}_M_{}_y0_{}_d0_{}_s_{}_a_{}_istd_{}_sstd_{}_astd_{}_bstd_{}_v{}.pkl'.format(args.save_path, args.Z_type, args.N, args.M, args.betaY_intercept_mean, args.betaDelta_intercept_mean, args.sigma_mean, args.alpha_mean, args.intercept_std, args.sigma_std, args.alpha_std, args.beta_std, i), 'wb')
+        file = open('{}/{}_unobservables_N_{}_M_{}_ns_{}_y0_{}_d0_{}_s_{}_a_{}_istd_{}_sstd_{}_astd_{}_bstd_{}_v{}.pkl'.format(args.save_path, args.Z_type, args.N, args.M, args.num_not_sparse, args.betaY_intercept_mean, args.betaDelta_intercept_mean, args.sigma_mean, args.alpha_mean, args.intercept_std, args.sigma_std, args.alpha_std, args.beta_std, i), 'wb')
         pickle.dump(simulated_data, file)
         file.close()
     

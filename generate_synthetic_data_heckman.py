@@ -88,7 +88,7 @@ def main():
                                                          betaDelta_0_except_for_these_idxs=betaDelta_0_except_for_these_idxs,
                                                          beta_std=args.beta_std)
 
-        file = open('{}/heckman_N_{}_M_{}_y0_{}_t0_{}_s_{}_r_{}_istd_{}_sstd_{}_rstd_{}_bstd_{}_v{}.pkl'.format(args.save_path, args.N, args.M, args.betaY_intercept_mean, args.betaT_intercept_mean, args.sigma_mean, args.rho_mean, args.intercept_std, args.sigma_std, args.rho_std, args.beta_std, i), 'wb')
+        file = open('{}/heckman_N_{}_M_{}_ns_{}_y0_{}_t0_{}_s_{}_r_{}_istd_{}_sstd_{}_rstd_{}_bstd_{}_v{}.pkl'.format(args.save_path, args.N, args.M, args.num_not_sparse, args.betaY_intercept_mean, args.betaT_intercept_mean, args.sigma_mean, args.rho_mean, args.intercept_std, args.sigma_std, args.rho_std, args.beta_std, i), 'wb')
         pickle.dump(simulated_data, file)
         file.close()
     
