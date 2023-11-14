@@ -17,15 +17,17 @@ def get_args():
     parser.add_argument('--sigma_mean', type=float, default=2) 
     parser.add_argument('--betaY_intercept_mean', type=float, default=-2) 
     parser.add_argument('--betaDelta_intercept_mean', type=float, default=2) 
-    parser.add_argument('--intercept_std', type=float, default=0.5)
-    parser.add_argument('--sigma_std', type=float, default=0.5)
-    parser.add_argument('--alpha_std', type=float, default=0.5) 
+    parser.add_argument('--intercept_std', type=float, default=0.1)
+    parser.add_argument('--sigma_std', type=float, default=0.1)
+    parser.add_argument('--alpha_std', type=float, default=0.1) 
+    parser.add_argument('--beta_std', type=float, default=1) 
     parser.add_argument('--save_path', type=str) # path to where data should be saved
     parser.add_argument('--Z_type', type=str, choices=['normal', 'uniform']) 
+    parser.add_argument('--num_not_sparse', type=int, default=2)
     args = parser.parse_args()
     return args
 
-def generate_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=None, betaDelta_intercept=None, betaDelta_0_except_for_these_idxs=None): 
+def generate_simulated_data(N, M, sigma, alpha, Z_type, beta_std, betaY_intercept=None, betaDelta_intercept=None, betaDelta_0_except_for_these_idxs=None): 
     """
     N: number of observations
     M: number of features
@@ -46,15 +48,15 @@ def generate_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=None, be
         Z = np.random.normal(loc=0, scale=sigma, size=(N, 1))
     elif Z_type == 'uniform':
         Z = np.random.uniform(low=0, high=sigma, size=(N, 1))
-    betaY = np.random.normal(size=(M, 1))
+    betaY = np.random.normal(scale=beta_std, size=(M, 1))
     
     # create betaDelta
     if betaDelta_0_except_for_these_idxs is not None:
         assert 0 in betaDelta_0_except_for_these_idxs
         betaDelta = np.zeros((M, 1))
-        betaDelta[betaDelta_0_except_for_these_idxs, 0] = np.random.normal(size=(len(betaDelta_0_except_for_these_idxs)))
+        betaDelta[betaDelta_0_except_for_these_idxs, 0] = np.random.normal(scale=beta_std, size=(len(betaDelta_0_except_for_these_idxs)))
     else:
-        betaDelta = np.random.normal(size=(M, 1))
+        betaDelta = np.random.normal(scale=beta_std, size=(M, 1))
         
     if betaY_intercept is not None:
         betaY[0] = betaY_intercept
@@ -86,7 +88,7 @@ def generate_simulated_data(N, M, sigma, alpha, Z_type, betaY_intercept=None, be
 def main():
     args = get_args()
     
-    betaDelta_0_except_for_these_idxs = [0, 1]
+    betaDelta_0_except_for_these_idxs = [i for i in range(args.num_not_sparse)]
 
     for i in range(args.num_datasets_to_save):
         alpha = np.random.normal(loc=args.alpha_mean, scale=args.alpha_std)
@@ -100,9 +102,10 @@ def main():
                                                          betaY_intercept=betaY_intercept, 
                                                          betaDelta_intercept=betaDelta_intercept,
                                                          betaDelta_0_except_for_these_idxs=betaDelta_0_except_for_these_idxs, 
-                                                         Z_type=args.Z_type)
+                                                         Z_type=args.Z_type,
+                                                         beta_std=args.beta_std)
 
-        file = open('{}/{}_unobservables_N_{}_y0_{}_d0_{}_s_{}_a_{}_istd_{}_sstd_{}_astd_{}_v{}.pkl'.format(args.save_path, args.Z_type, args.N, args.betaY_intercept_mean, args.betaDelta_intercept_mean, args.sigma_mean, args.alpha_mean, args.intercept_std, args.sigma_std, args.alpha_std, i), 'wb')
+        file = open('{}/{}_unobservables_N_{}_M_{}_y0_{}_d0_{}_s_{}_a_{}_istd_{}_sstd_{}_astd_{}_bstd_{}_v{}.pkl'.format(args.save_path, args.Z_type, args.N, args.M, args.betaY_intercept_mean, args.betaDelta_intercept_mean, args.sigma_mean, args.alpha_mean, args.intercept_std, args.sigma_std, args.alpha_std, args.beta_std, i), 'wb')
         pickle.dump(simulated_data, file)
         file.close()
     

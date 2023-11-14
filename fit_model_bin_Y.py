@@ -16,13 +16,12 @@ def get_args():
     parser.add_argument('--sigma', type=float) # set to -1 if you want sigma to float
     parser.add_argument('--alpha', type=float) # set to -1 if you want alpha to float
     parser.add_argument('--prevalence_constraint_weight', type=float, default=0) # set to 0 if you don't want prevalence
-    parser.add_argument('--use_sparsity_prior', action=argparse.BooleanOptionalAction)
-    parser.add_argument('--sparsity_prior_idx', type=int, default=0)
-    parser.add_argument('--N', type=int, default=-1) # don't incclude if you want full dataset
+    parser.add_argument('--N', type=int, default=-1) # don't include if you want full dataset
     parser.add_argument('--file_path', type=str) # path to data
     parser.add_argument('--save_path', type=str) # path to folder where stan samples should be saved
     parser.add_argument('--model', type=str) # path to stan model file
     parser.add_argument('--Z_type', type=str, choices=['normal', 'uniform']) 
+    parser.add_argument('--num_not_sparse', type=int)
     args = parser.parse_args()
     return args
 
@@ -50,6 +49,7 @@ def main():
         N = len(simulated_data['observed_data']['T'])
     else:
         N = args.N
+    M = simulated_data['observed_data']['M']
     T = simulated_data['observed_data']['T'][:N]
     Y = simulated_data['observed_data']['Y'][:N]
     true_prevalence = simulated_data['observed_data']['Y'].mean()
@@ -63,7 +63,7 @@ def main():
     print("p(Y=1|T=1): %2.3f" % (Y[T==1].mean()))
     print("p(Y=1|T=0): %2.3f" % (Y[T==0].mean()))
 
-    # constraints
+    # prevalence constraint
     simulated_data['observed_data']['prevalence_constraint_weight'] = args.prevalence_constraint_weight
     simulated_data['observed_data']['true_prevalence'] = true_prevalence
     if args.sigma != -1:
@@ -74,17 +74,12 @@ def main():
         simulated_data['observed_data']['known_alpha'] = alpha
     else:
         simulated_data['observed_data']['known_alpha'] = -1
-    if args.use_sparsity_prior:
-        if args.sparsity_prior_idx == 0:
-            not_zeroed_out_beta_delta_indices = [1, 2]
-            N_not_zeroed_out_beta_delta_indices = len(not_zeroed_out_beta_delta_indices)
-            simulated_data['observed_data']['N_not_zeroed_out_beta_delta_indices'] = N_not_zeroed_out_beta_delta_indices
-            simulated_data['observed_data']['not_zeroed_out_beta_delta_indices'] = not_zeroed_out_beta_delta_indices
-    else:
-        not_zeroed_out_beta_delta_indices = [1, 2, 3, 4, 5]
-        N_not_zeroed_out_beta_delta_indices = len(not_zeroed_out_beta_delta_indices)
-        simulated_data['observed_data']['N_not_zeroed_out_beta_delta_indices'] = N_not_zeroed_out_beta_delta_indices
-        simulated_data['observed_data']['not_zeroed_out_beta_delta_indices'] = not_zeroed_out_beta_delta_indices
+
+    # expertise constraint
+    not_zeroed_out_beta_delta_indices = [i + 1 for i in range(args.num_not_sparse)]
+    N_not_zeroed_out_beta_delta_indices = len(not_zeroed_out_beta_delta_indices)
+    simulated_data['observed_data']['N_not_zeroed_out_beta_delta_indices'] = N_not_zeroed_out_beta_delta_indices
+    simulated_data['observed_data']['not_zeroed_out_beta_delta_indices'] = not_zeroed_out_beta_delta_indices
             
     print()
     print("Model Properties:")
@@ -101,7 +96,7 @@ def main():
     print('N:', N)
     
     data = {"N":N,
-            "M":simulated_data['observed_data']['M'], 
+            "M":M, 
             "num_T1_Y1":np.sum((T == 1) & (Y == 1)),
             "num_T1_Y0":np.sum((T == 1) & (Y == 0)),
             "num_T0":np.sum(T == 0),

@@ -14,12 +14,11 @@ def get_args():
     parser.add_argument('--num_chains', type=int, default=4)
     parser.add_argument('--job_id', type=int, default=0) # unique identifier for job
     parser.add_argument('--prevalence_constraint_weight', type=float, default=0) # set to 0 if you don't want prevalence
-    parser.add_argument('--use_sparsity_prior', action=argparse.BooleanOptionalAction)
-    parser.add_argument('--sparsity_prior_idx', type=int, default=0)
     parser.add_argument('--N', type=int, default=-1) # don't incclude if you want full dataset
     parser.add_argument('--file_path', type=str) # path to data
     parser.add_argument('--save_path', type=str) # path to folder where stan samples should be saved
     parser.add_argument('--model', type=str) # path to stan model file
+    parser.add_argument('--num_sparse', type=int)
     args = parser.parse_args()
     return args
 
@@ -45,8 +44,10 @@ def main():
     # get observed data and parameters
     if args.N == -1:
         N = len(simulated_data['observed_data']['T'])
+                        
     else:
         N = args.N
+    M = simulated_data['observed_data']['M']
     X = simulated_data['observed_data']['X'][:N]
     T = simulated_data['observed_data']['T'][:N]
     Y = simulated_data['observed_data']['Y'][:N]
@@ -64,12 +65,12 @@ def main():
     # constraints
     simulated_data['observed_data']['prevalence_constraint_weight'] = args.prevalence_constraint_weight
     simulated_data['observed_data']['true_prevalence'] = true_prevalence
-    if args.use_sparsity_prior:
-        if args.sparsity_prior_idx == 0:
-            zeroed_out_beta_delta_indices = [3, 4, 5]
-            N_zeroed_out_beta_delta_indices = len(zeroed_out_beta_delta_indices)
-            simulated_data['observed_data']['N_zeroed_out_beta_delta_indices'] = N_zeroed_out_beta_delta_indices
-            simulated_data['observed_data']['zeroed_out_beta_delta_indices'] = zeroed_out_beta_delta_indices
+    if args.num_sparse > 0:
+        zeroed_out_beta_delta_indices = [M - i for i in range(args.num_sparse)]
+        zeroed_out_beta_delta_indices.reverse()
+        N_zeroed_out_beta_delta_indices = len(zeroed_out_beta_delta_indices)
+        simulated_data['observed_data']['N_zeroed_out_beta_delta_indices'] = N_zeroed_out_beta_delta_indices
+        simulated_data['observed_data']['zeroed_out_beta_delta_indices'] = zeroed_out_beta_delta_indices
     else:
         zeroed_out_beta_delta_indices = [-1]
         N_zeroed_out_beta_delta_indices = len(zeroed_out_beta_delta_indices)

@@ -20,11 +20,13 @@ def get_args():
     parser.add_argument('--intercept_std', type=float, default=0.5)
     parser.add_argument('--sigma_std', type=float, default=0.5)
     parser.add_argument('--rho_std', type=float, default=0.5) 
+    parser.add_argument('--beta_std', type=float, default=1)
     parser.add_argument('--save_path', type=str) # path to where data should be saved
+    parser.add_argument('--num_not_sparse', type=int, default=2)
     args = parser.parse_args()
     return args
 
-def generate_simulated_data(N, M, sigma, rho, betaY_intercept=None, betaT_intercept=None, betaDelta_0_except_for_these_idxs=None): 
+def generate_simulated_data(N, M, sigma, rho, beta_std, betaY_intercept=None, betaT_intercept=None, betaDelta_0_except_for_these_idxs=None): 
     """
     N: number of observations
     M: number of features
@@ -40,15 +42,15 @@ def generate_simulated_data(N, M, sigma, rho, betaY_intercept=None, betaT_interc
     X = np.random.normal(size=(N, M - 1))
     X = (X - X.mean(axis=0)) / X.std(axis=0)
     X = np.concatenate((np.ones((N, 1)), X), axis=1)
-    beta_Y = np.random.normal(size=(M))
+    beta_Y = np.random.normal(scale=beta_std, size=(M))
     if betaDelta_0_except_for_these_idxs is not None:
         assert 0 in betaDelta_0_except_for_these_idxs
-        beta_T = np.random.normal(size=(M))
+        beta_T = np.random.normal(scale=beta_std, size=(M))
         for i in range(M):
             if i not in betaDelta_0_except_for_these_idxs:
                 beta_T[i] = beta_Y[i] * rho / (sigma ** 2)
     else:
-        beta_T = np.random.normal(size=(M))
+        beta_T = np.random.normal(scale=beta_std, size=(M))
     if betaY_intercept is not None:
         beta_Y[0] = betaY_intercept
     if betaT_intercept is not None:
@@ -70,7 +72,7 @@ def generate_simulated_data(N, M, sigma, rho, betaY_intercept=None, betaT_interc
 def main():
     args = get_args()
     
-    betaDelta_0_except_for_these_idxs = [0, 1]
+    betaDelta_0_except_for_these_idxs = [i for i in range(args.num_not_sparse)]
 
     for i in range(args.num_datasets_to_save):
         rho = np.random.normal(loc=args.rho_mean, scale=args.rho_std)
@@ -83,9 +85,10 @@ def main():
                                                          rho=rho,
                                                          betaY_intercept=betaY_intercept, 
                                                          betaT_intercept=betaT_intercept,
-                                                         betaDelta_0_except_for_these_idxs=betaDelta_0_except_for_these_idxs)
+                                                         betaDelta_0_except_for_these_idxs=betaDelta_0_except_for_these_idxs,
+                                                         beta_std=args.beta_std)
 
-        file = open('{}/heckman_N_{}_y0_{}_t0_{}_s_{}_r_{}_istd_{}_sstd_{}_rstd_{}_v{}.pkl'.format(args.save_path, args.N, args.betaY_intercept_mean, args.betaT_intercept_mean, args.sigma_mean, args.rho_mean, args.intercept_std, args.sigma_std, args.rho_std, i), 'wb')
+        file = open('{}/heckman_N_{}_M_{}_y0_{}_t0_{}_s_{}_r_{}_istd_{}_sstd_{}_rstd_{}_bstd_{}_v{}.pkl'.format(args.save_path, args.N, args.M, args.betaY_intercept_mean, args.betaT_intercept_mean, args.sigma_mean, args.rho_mean, args.intercept_std, args.sigma_std, args.rho_std, args.beta_std, i), 'wb')
         pickle.dump(simulated_data, file)
         file.close()
     
