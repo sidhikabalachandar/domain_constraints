@@ -43,8 +43,10 @@ def main():
     
     cur_job_id = args.starting_job_id
     for i in range(args.num_jobs_to_sumbit):
-        # submit unconstrained job
+        # change file name for different data
         file_path = os.path.join(args.file_dir, "uniform_unobservables_N_50_y0_-2.0_d0_2.0_istd_0.1_sstd_0.1_brstd_0.0_v{}.pkl".format(i)) 
+        
+        # submit unconstrained job
         formatted_cmd = cmd.format(args.slurm_submission_script,
                                    args.python_file,
                                    args.num_warmup_iter,
@@ -61,8 +63,7 @@ def main():
                                    args.Z_type,
                                    cur_job_id)          
         cur_job_id += 1
-        print(formatted_cmd)
-        # os.system(formatted_cmd)
+        os.system(formatted_cmd)
                                  
         # submit prevalence constrained job
         formatted_cmd = cmd.format(args.slurm_submission_script,
@@ -81,8 +82,7 @@ def main():
                                    args.Z_type,
                                    cur_job_id)        
         cur_job_id += 1
-        print(formatted_cmd)
-        # os.system(formatted_cmd)
+        os.system(formatted_cmd)
                                  
         # submit expertise constrained job
         formatted_cmd = cmd.format(args.slurm_submission_script,
@@ -101,8 +101,7 @@ def main():
                                    args.Z_type,
                                    cur_job_id)        
         cur_job_id += 1
-        print(formatted_cmd)
-        # os.system(formatted_cmd)
+        os.system(formatted_cmd)
     
 if __name__ == "__main__":
     main()
