@@ -9,8 +9,8 @@ def get_args():
     parser.add_argument('--num_sampling_iter', type=int)
     parser.add_argument('--num_chains', type=int, default=4)
     parser.add_argument('--job_id', type=int, default=0) # unique identifier for job
-    parser.add_argument('--sigma', type=float) # set to -1 if you want sigma to float
-    parser.add_argument('--alpha', type=float) # set to -1 if you want alpha to float
+    parser.add_argument('--predict_sigma', action=argparse.BooleanOptionalAction)
+    parser.add_argument('--predict_alpha', action=argparse.BooleanOptionalAction)
     parser.add_argument('--N', type=int, default=-1) # don't include if you want full dataset
     parser.add_argument('--M', type=int, default=5)
     parser.add_argument('--file_dir', type=str) # path to data
@@ -26,13 +26,13 @@ def get_args():
 
 def main():
     args = get_args()
-    
+
+    # edit if you want to predict sigma 
     cmd = "sbatch --requeue {} python {} --num_warmup_iter {} \
                                          --num_sampling_iter {} \
                                          --num_chains {} \
                                          --N {} \
-                                         --sigma {} \
-                                         --alpha {} \
+                                         --predict_alpha\
                                          --prevalence_constraint_weight {} \
                                          --num_not_sparse {} \
                                          --model {} \
@@ -53,8 +53,6 @@ def main():
                                    args.num_sampling_iter,
                                    args.num_chains,
                                    args.N,
-                                   args.sigma,
-                                   args.alpha,
                                    0,
                                    args.M,
                                    args.model,
@@ -72,8 +70,6 @@ def main():
                                    args.num_sampling_iter,
                                    args.num_chains,
                                    args.N,
-                                   args.sigma,
-                                   args.alpha,
                                    args.prevalence_constraint_weight,
                                    args.M,
                                    args.model,
@@ -91,8 +87,6 @@ def main():
                                    args.num_sampling_iter,
                                    args.num_chains,
                                    args.N,
-                                   args.sigma,
-                                   args.alpha,
                                    0,
                                    args.num_not_sparse,
                                    args.model,

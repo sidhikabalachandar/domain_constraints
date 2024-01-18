@@ -13,8 +13,8 @@ def get_args():
     parser.add_argument('--num_sampling_iter', type=int)
     parser.add_argument('--num_chains', type=int, default=4)
     parser.add_argument('--job_id', type=int, default=0) # unique identifier for job
-    parser.add_argument('--sigma', type=float) # set to -1 if you want sigma to float
-    parser.add_argument('--alpha', type=float) # set to -1 if you want alpha to float
+    parser.add_argument('--predict_sigma', action=argparse.BooleanOptionalAction)
+    parser.add_argument('--predict_alpha', action=argparse.BooleanOptionalAction)
     parser.add_argument('--prevalence_constraint_weight', type=float, default=0) # set to 0 if you don't want prevalence
     parser.add_argument('--N', type=int, default=-1) # don't include if you want full dataset
     parser.add_argument('--file_path', type=str) # path to data
@@ -66,14 +66,14 @@ def main():
     # prevalence constraint
     simulated_data['observed_data']['prevalence_constraint_weight'] = args.prevalence_constraint_weight
     simulated_data['observed_data']['true_prevalence'] = true_prevalence
-    if args.sigma != -1:
-        simulated_data['observed_data']['known_sigma'] = sigma
-    else:
+    if args.predict_sigma:
         simulated_data['observed_data']['known_sigma'] = -1
-    if args.alpha != -1:
-        simulated_data['observed_data']['known_alpha'] = alpha
     else:
+        simulated_data['observed_data']['known_sigma'] = sigma
+    if args.predict_alpha:
         simulated_data['observed_data']['known_alpha'] = -1
+    else:
+        simulated_data['observed_data']['known_alpha'] = alpha
 
     # expertise constraint
     not_zeroed_out_beta_delta_indices = [i + 1 for i in range(args.num_not_sparse)]
